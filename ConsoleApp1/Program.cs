@@ -19,6 +19,7 @@ class Program
         Console.WriteLine("");
         Console.Write("Seleccione una opción: ");
         int opcionMenuPrincipal = int.Parse(Console.ReadLine());
+        Console.WriteLine("");
 
         
 
@@ -34,7 +35,7 @@ class Program
                     MenuPrestamos();
                     break;
                 case 4:
-                    
+                    BusquedasReportes();
                     break;
                 case 5:
                     
@@ -79,7 +80,8 @@ class Program
         Console.WriteLine("6. Volver al menú principal");
         Console.WriteLine("");
         Console.Write("Seleccione una opción: ");
-        int opcionMenuLibro = int.Parse(Console.ReadLine());  
+        int opcionMenuLibro = int.Parse(Console.ReadLine());
+        Console.WriteLine("");
 
             switch (opcionMenuLibro)
             {
@@ -187,8 +189,10 @@ static void MenuUsuario()
         Console.WriteLine("4. Actualizar usuario");
         Console.WriteLine("5. Eliminar usuario");
         Console.WriteLine("6. Volver al menú principal");
-        Console.WriteLine("");
+
+        Console.WriteLine("Ingrese una opción:");
         int opcionMenuUsuario = int.Parse(Console.ReadLine());
+        Console.WriteLine("");
 
 
 
@@ -294,8 +298,10 @@ static void MenuPrestamos()
         Console.WriteLine("4. Registrar devolución");
         Console.WriteLine("5. Eliminar préstamo");
         Console.WriteLine("6. Volver al menú principal");
-        Console.WriteLine("");
+
+        Console.WriteLine("Ingrese una opción:");
         int opcionMenuPrestamos = int.Parse(Console.ReadLine());
+        Console.WriteLine("");
 
         switch (opcionMenuPrestamos)
             {
@@ -375,4 +381,243 @@ static void EliminarPrestamo()
         Console.WriteLine("Eliminar préstamo");
         Console.ReadKey();
 }
+
+// menu busquedas y reportes
+static void BusquedasReportes()
+    {
+        bool volver = false;
+        while (!volver)
+        {
+        Console.Clear();
+        Console.WriteLine("1. Buscar libro");
+        Console.WriteLine("2. Buscar usuario");
+        Console.WriteLine("3. Reportes");
+        Console.WriteLine("4. Volver al menú principal");
+        
+        Console.WriteLine("ingrese una opcion");
+        int opcionMenuBusquedas = int.Parse(Console.ReadLine());
+        Console.WriteLine("");
+
+        switch (opcionMenuBusquedas)
+            {
+                case 1:
+                    BuscarLibro();
+                    break;
+                case 2:
+                    BuscarUsuario();
+                    break;
+                case 3:
+                    Reportes();
+                    break;
+                case 4:
+                    volver = true;
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Intente nuevamente.");
+                    Console.ReadKey();
+                    break;
+            }
+}
+    }
+    static void BuscarLibro()
+    {
+        Console.Clear();
+        Console.WriteLine("SELECCIONA EL CRITERIO DE BUSQUEDA");
+        Console.WriteLine("1. titulo");
+        Console.WriteLine("2. autor");
+        Console.WriteLine("3. ID/IBSN");
+        Console.WriteLine("4. categoria");
+
+        Console.WriteLine("Ingrese una opcion");
+        int opcionBuscarLibro = int.Parse(Console.ReadLine());
+        Console.WriteLine("");
+
+        switch (opcionBuscarLibro)
+            {
+                case 1:
+                    BuscarRepotePorTitulo();
+                    break;
+                case 2:
+                    BuscarRepotePorAutor();
+                    break;
+                case 3:
+                    BuscarRepotePorID();
+                    break;
+                case 4:
+                BuscarRepotePorCategoria();
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Intenteuevamente.");
+                    Console.ReadKey(); 
+                    break;
+            }
+        
+
+        Console.ReadKey();
+    }
+    static void BuscarRepotePorTitulo()
+    {
+        Console.Clear();
+        Console.WriteLine("Buscar libro por titulo");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
+        Console.ReadKey();
+    }
+    static void BuscarRepotePorAutor()
+    {
+        Console.Clear();
+        Console.WriteLine("Buscar libro por autor");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
+        Console.ReadKey();
+    }
+    static void BuscarRepotePorID()
+    {
+        Console.Clear();
+        Console.WriteLine("Buscar libro por ID/ISBN");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
+        Console.ReadKey();
+    }
+    static void BuscarRepotePorCategoria()
+    {
+        Console.Clear();
+        Console.WriteLine("Buscar libro por categoria");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
+        Console.ReadKey();
+    }
+    static void BuscarUsuario()
+    {
+        bool volver = false;
+        while (!volver){
+        Console.Clear();
+        Console.WriteLine("SELECCIONA EL CRITERIO DE BUSQUEDA");
+        Console.WriteLine("1. nombre");
+        Console.WriteLine("2. ID/documento");
+        Console.WriteLine("3. volver al menu busquedas y reportes");
+
+        Console.WriteLine("Ingrese una opcion");
+        int opcionBuscarUsuarios = int.Parse(Console.ReadLine());
+        Console.WriteLine("");
+
+
+
+            switch (opcionBuscarUsuarios)
+            {
+                case 1:
+                    BuscarUsuarioPorNombre();
+                    break;
+                case 2:
+                    BuscarUsuarioPorID();
+                    break;
+                case 3: 
+                    volver = true;
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Intente nuevamente.");
+                    Console.ReadKey();
+                    break;
+            }
+}
+    }
+    static void BuscarUsuarioPorNombre()
+    {
+        Console.Clear();
+        Console.WriteLine("Buscar usuario por nombre");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
+        Console.ReadKey();
+    }
+    static void BuscarUsuarioPorID()
+    {
+        Console.Clear();
+        Console.WriteLine("Buscar usuario por ID/documento");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
+        Console.ReadKey();
+    }
+static void Reportes()
+    {
+        bool volver = false;
+        while (!volver)
+        {
+        Console.Clear();
+        Console.WriteLine("REPORTES");
+        Console.WriteLine("1. Prestamos por usuario");
+        Console.WriteLine("2. Prestamos por libro");
+        Console.WriteLine("3. Prestamos vencidos");
+        Console.WriteLine("4. Resumen general");
+        Console.WriteLine("5. Volver al menú busquedas y reportes");
+
+        Console.WriteLine("Ingrese una opcion");
+        int opcionMenuReportes = int.Parse(Console.ReadLine());
+        Console.WriteLine("");
+
+        switch (opcionMenuReportes)
+            {
+                case 1:
+                    PrestamosPorUsuario();
+                    break;
+                case 2:
+                    PrestamosPorLibro();
+                    break;
+                case 3:
+                    PrestamosVencidos();
+                    break;
+                case 4:
+                    ResumenGeneral();
+                    break;
+                case 5:
+                    volver = true;
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Intente nuevamente.");
+                    Console.ReadKey();
+                    break;
+        }
+static void PrestamosPorUsuario()
+    {
+        Console.Clear();
+        Console.WriteLine("Listar préstamos por usuario");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú reportes");
+        Console.ReadKey();
+}
+static void PrestamosPorLibro()
+    {
+        Console.Clear();
+        Console.WriteLine("Listar préstamos por libro");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú reportes");
+        Console.ReadKey();
+}
+static void PrestamosVencidos()
+    {
+        Console.Clear();
+        Console.WriteLine("Listar préstamos vencidos");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú reportes");
+        Console.ReadKey();
+}
+static void ResumenGeneral()
+    {
+        Console.Clear();
+        Console.WriteLine("Resumen general");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú reportes");
+        Console.ReadKey();
+}
+        }
+    }
 }
