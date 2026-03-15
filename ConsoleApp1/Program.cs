@@ -42,7 +42,7 @@ class Program
                     break;
                 case 6:
                     salir = true;
-                    Console.WriteLine("Saliendo del programa...");
+                    Salir();
                     break;
                 default:
                     Console.WriteLine("Opción no válida. Intente nuevamente.");
@@ -744,4 +744,20 @@ static void VaciarDatos()
         Console.ReadKey();
     }
 }
+static void Salir()
+    {
+        Console.WriteLine("guardar antes de salir ? (S/N)");
+        string respuesta = Console.ReadLine();
+        if (respuesta == "S")
+        {
+            Console.WriteLine("Guardando datos...");
+        }else if (respuesta == "N")
+        {
+            Console.WriteLine("Saliendo sin guardar...");
+        }
+        else
+        {
+            Console.WriteLine("Opción no válida. Saliendo sin guardar...");
+        }
+    }
 }
