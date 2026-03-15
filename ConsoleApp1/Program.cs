@@ -31,7 +31,7 @@ class Program
                     MenuUsuario();
                     break;
                 case 3:
-            
+                    MenuPrestamos();
                     break;
                 case 4:
                     
@@ -266,5 +266,113 @@ static void EliminarUsuario()
         Console.WriteLine("Eliminar usuario");
         Console.ReadKey();
     }
+}
+
+
+// menu prestamos
+
+public class Prestamo
+{
+    public int IdPrestamo { get; set; }
+    public int IdUsuario { get; set; }
+    public int IdLibro { get; set; }
+    public DateTime FechaPrestamo { get; set; }
+    public DateTime FechaLimite { get; set; }
+    public DateTime? FechaDevolucion { get; set; } 
+    public string Estado { get; set; } = "Activo";
+}
+
+static void MenuPrestamos()
+    {
+        bool volver = false;
+        while (!volver)
+        {
+        Console.Clear();
+        Console.WriteLine("1. Crear nuevo préstamo");
+        Console.WriteLine("2. Listar préstamos");
+        Console.WriteLine("3. Ver detalle del préstamo por ID");
+        Console.WriteLine("4. Registrar devolución");
+        Console.WriteLine("5. Eliminar préstamo");
+        Console.WriteLine("6. Volver al menú principal");
+        Console.WriteLine("");
+        int opcionMenuPrestamos = int.Parse(Console.ReadLine());
+
+        switch (opcionMenuPrestamos)
+            {
+                case 1:
+                    CrearPrestamo();
+                    break;
+                case 2:
+                    ListarPrestamos();
+                    break;
+                case 3:
+                    VerDetallePrestamo();
+                    break;
+                case 4:
+                    RegistrarDevolucion();
+                    break;
+                case 5:
+                    EliminarPrestamo();
+                    break;
+                case 6:
+                    volver = true;
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Intente nuevamente.");
+                    Console.ReadKey();
+                    break;
+            }
+}
+    }
+    static void CrearPrestamo()
+    {
+        Console.Clear();
+        Console.WriteLine("Usuario existe y esta activo");
+        Console.WriteLine("");
+        Console.WriteLine("Libro existe y esta disponible");
+        Console.WriteLine("");
+
+        Console.WriteLine("Presiona enter volver al menú préstamos");
+        Console.ReadKey();
+    }
+    static void ListarPrestamos()
+    {
+        Console.Clear();
+        Console.WriteLine("Todos");
+        Console.WriteLine("Activos");
+        Console.WriteLine("Devueltos");
+        Console.WriteLine("");
+
+        Console.WriteLine("Volver al menú préstamos");
+        Console.ReadKey();
+}
+static void VerDetallePrestamo()
+    {
+        Console.Clear();
+        Console.WriteLine("Ver detalle del préstamo por ID");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú préstamos");
+        Console.ReadKey();
+}
+static void RegistrarDevolucion()
+    {
+        Console.Clear();
+        Console.WriteLine("Cambia el prestamo a devuelto");
+        Console.WriteLine("Marca el libro como disponible");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú préstamos");
+        Console.ReadKey();
+}
+static void EliminarPrestamo()
+    {
+        Console.Clear();
+        Console.WriteLine("ADVERTENCIA: Esta acción no se puede deshacer");
+        Console.WriteLine("");
+        Console.WriteLine("Recomendacion : recomendado: solo si está cerrado o fue creado por error; si lo borras activo, debes devolver el libro automáticamente");
+        Console.WriteLine("");
+        Console.WriteLine("Eliminar préstamo");
+        Console.ReadKey();
 }
 }
