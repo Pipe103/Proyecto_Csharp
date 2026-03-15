@@ -38,7 +38,7 @@ class Program
                     BusquedasReportes();
                     break;
                 case 5:
-                    
+                    GuardarCargarDatos();
                     break;
                 case 6:
                     salir = true;
@@ -620,4 +620,128 @@ static void ResumenGeneral()
 }
         }
     }
+
+
+    // menu guardar y cargar datos
+    static void GuardarCargarDatos()
+    {
+        bool volver = false;
+        while (!volver)
+        {
+        Console.Clear();
+        Console.WriteLine("1. Guardar datos");
+        Console.WriteLine("2. Cargar datos");
+        Console.WriteLine("3. vaciar todo");
+        Console.WriteLine("4. Volver al menú principal");
+        
+
+        Console.WriteLine("Ingrese una opción:");
+        int opcionMenuGuardarCargar = int.Parse(Console.ReadLine());
+        Console.WriteLine("");
+
+        switch (opcionMenuGuardarCargar)
+            {
+                case 1:
+                    GuardarDatos();
+                    break;
+                case 2:
+                    CargarDatos();
+                    break;
+                case 3:
+                    VaciarDatos();
+                    break;
+                case 4:
+                    volver = true;
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Intente nuevamente.");
+                    Console.ReadKey();
+                    break;
+            }
+}
+static void GuardarDatos()
+    {
+        bool volver = false;
+        Console.Clear();
+        Console.WriteLine("Guardar datos");
+        Console.WriteLine("1. libros");
+        Console.WriteLine("2. usuarios");
+        Console.WriteLine("3. préstamos");
+
+        Console.WriteLine("Ingrese una opción:");
+        int opcionGuardarDatos = int.Parse(Console.ReadLine());
+        Console.WriteLine("");
+        switch (opcionGuardarDatos)
+            {
+                case 1:
+                    GuardarLibros();
+                    break;
+                case 2:
+                    GuardarUsuarios();
+                    break;
+                case 3:
+                    GuardarPrestamos();
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Intente nuevamente.");
+                    Console.ReadKey();
+                    break;
+            }
+}
+static void GuardarLibros()
+    {
+        Console.Clear();
+        Console.WriteLine("Guardar libros");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú guardar/cargar datos");
+        Console.ReadKey();
+}
+static void GuardarUsuarios()
+    {
+        Console.Clear();
+        Console.WriteLine("Guardar usuarios");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú guardar/cargar datos");
+        Console.ReadKey();
+}
+static void GuardarPrestamos()
+    {
+        Console.Clear();
+        Console.WriteLine("Guardar préstamos");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú guardar/cargar datos");
+        Console.ReadKey();
+}
+static void CargarDatos()
+    {
+        Console.Clear();
+        Console.WriteLine("Datos cargados");
+        Console.WriteLine("");
+        
+        Console.WriteLine("Presiona enter volver al menú guardar/cargar datos");
+        Console.ReadKey();
+}
+static void VaciarDatos()
+    {
+        Console.Clear();
+        Console.WriteLine("ADVERTENCIA: Esta acción no se puede deshacer");
+        Console.WriteLine("");  
+        Console.WriteLine("Ingresa CONFIRMAR para vaciar todos los datos de libros, usuarios y préstamos");
+        Console.WriteLine(""); 
+        Console.WriteLine("ingresa enter para cancelar");
+        string confirmacion = Console.ReadLine();
+        if (confirmacion == "CONFIRMAR")
+        {
+            Console.WriteLine("Datos vaciados");
+        }
+        else
+        {
+            Console.WriteLine("Acción cancelada");
+        }
+        Console.ReadKey();
+    }
+}
 }
