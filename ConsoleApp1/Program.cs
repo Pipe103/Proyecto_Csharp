@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Libros;
 using Usuarios;
 using Prestamos;
+using System.Text.Json;
+using System.IO;
 namespace ConsoleApp1;
 
 class Program
@@ -1390,7 +1392,6 @@ static void PrestamosPorUsuario()
     Console.Write("Ingrese ID del usuario: ");
     int id = int.Parse(Console.ReadLine());
 
-    // 🔹 Validar usuario
     Usuario usuario = usuarios.FirstOrDefault(u => u.Id == id);
 
     if (usuario == null)
@@ -1400,7 +1401,6 @@ static void PrestamosPorUsuario()
         return;
     }
 
-    // 🔹 Buscar préstamos
     var lista = prestamos
         .Where(p => p.IdUsuario == id)
         .ToList();
@@ -1430,7 +1430,6 @@ static void PrestamosPorLibro()
     Console.Write("Ingrese ID del libro: ");
     int id = int.Parse(Console.ReadLine());
 
-    // 🔹 Validar libro
     Libro libro = libros.FirstOrDefault(l => l.Id == id);
 
     if (libro == null)
@@ -1440,7 +1439,6 @@ static void PrestamosPorLibro()
         return;
     }
 
-    // 🔹 Buscar préstamos
     var lista = prestamos
         .Where(p => p.IdLibro == id)
         .ToList();
@@ -1506,17 +1504,17 @@ static void ResumenGeneral()
     int devueltos = prestamos.Count(p => p.Estado == "Devuelto");
     int vencidos = prestamos.Count(p => p.Estado == "Activo" && DateTime.Now > p.FechaLimite);
 
-    Console.WriteLine("📚 LIBROS");
+    Console.WriteLine(" LIBROS");
     Console.WriteLine($"Total: {totalLibros}");
     Console.WriteLine($"Disponibles: {disponibles}");
     Console.WriteLine($"Prestados: {prestados}\n");
 
-    Console.WriteLine("👤 USUARIOS");
+    Console.WriteLine("USUARIOS");
     Console.WriteLine($"Total: {totalUsuarios}");
     Console.WriteLine($"Activos: {activos}");
     Console.WriteLine($"Inactivos: {inactivos}\n");
 
-    Console.WriteLine("📄 PRÉSTAMOS");
+    Console.WriteLine("PRÉSTAMOS");
     Console.WriteLine($"Total: {totalPrestamos}");
     Console.WriteLine($"Activos: {activosPrestamos}");
     Console.WriteLine($"Devueltos: {devueltos}");
@@ -1564,6 +1562,7 @@ static void ResumenGeneral()
                     break;
             }
 }
+    }
 static void GuardarDatos()
     {
         bool volver = false;
@@ -1594,31 +1593,79 @@ static void GuardarDatos()
             }
 }
 static void GuardarLibros()
+{
+    Console.Clear();
+    Console.WriteLine("=== GUARDAR LIBROS ===\n");
+
+    try
     {
-        Console.Clear();
-        Console.WriteLine("Guardar libros");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú guardar/cargar datos");
-        Console.ReadKey();
+        string json = JsonSerializer.Serialize(libros, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+
+        File.WriteAllText("libros.json", json);
+
+        Console.WriteLine("Libros guardados correctamente ");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Error al guardar ");
+        Console.WriteLine(ex.Message);
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
 }
 static void GuardarUsuarios()
+{
+    Console.Clear();
+    Console.WriteLine("=== GUARDAR USUARIOS ===\n");
+
+    try
     {
-        Console.Clear();
-        Console.WriteLine("Guardar usuarios");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú guardar/cargar datos");
-        Console.ReadKey();
+        string json = JsonSerializer.Serialize(usuarios, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+
+        File.WriteAllText("usuarios.json", json);
+
+        Console.WriteLine("Usuarios guardados correctamente ");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Error al guardar ");
+        Console.WriteLine(ex.Message);
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
 }
 static void GuardarPrestamos()
+{
+    Console.Clear();
+    Console.WriteLine("=== GUARDAR PRÉSTAMOS ===\n");
+
+    try
     {
-        Console.Clear();
-        Console.WriteLine("Guardar préstamos");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú guardar/cargar datos");
-        Console.ReadKey();
+        string json = JsonSerializer.Serialize(prestamos, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+
+        File.WriteAllText("prestamos.json", json);
+
+        Console.WriteLine("Préstamos guardados correctamente ");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Error al guardar ");
+        Console.WriteLine(ex.Message);
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
 }
 static void CargarDatos()
     {
@@ -1630,24 +1677,37 @@ static void CargarDatos()
         Console.ReadKey();
 }
 static void VaciarDatos()
+{
+    Console.Clear();
+    Console.WriteLine("⚠ ADVERTENCIA: Esta acción no se puede deshacer\n");
+    Console.WriteLine("Ingresa CONFIRMAR para vaciar todos los datos");
+    Console.WriteLine("Presiona ENTER para cancelar\n");
+
+    string confirmacion = Console.ReadLine();
+
+    if (confirmacion == "CONFIRMAR")
     {
-        Console.Clear();
-        Console.WriteLine("ADVERTENCIA: Esta acción no se puede deshacer");
-        Console.WriteLine("");  
-        Console.WriteLine("Ingresa CONFIRMAR para vaciar todos los datos de libros, usuarios y préstamos");
-        Console.WriteLine(""); 
-        Console.WriteLine("ingresa enter para cancelar");
-        string confirmacion = Console.ReadLine();
-        if (confirmacion == "CONFIRMAR")
-        {
-            Console.WriteLine("Datos vaciados");
-        }
-        else
-        {
-            Console.WriteLine("Acción cancelada");
-        }
-        Console.ReadKey();
+        libros.Clear();
+        usuarios.Clear();
+        prestamos.Clear();
+
+        if (File.Exists("libros.json"))
+            File.Delete("libros.json");
+
+        if (File.Exists("usuarios.json"))
+            File.Delete("usuarios.json");
+
+        if (File.Exists("prestamos.json"))
+            File.Delete("prestamos.json");
+
+        Console.WriteLine("\nTodos los datos fueron eliminados correctamente ✔");
     }
+    else
+    {
+        Console.WriteLine("\nAcción cancelada");
+    }
+
+    Console.ReadKey();
 }
 static void Salir()
     {
