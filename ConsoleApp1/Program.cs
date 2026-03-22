@@ -3,15 +3,23 @@ using System.Linq;
 using System.Collections.Generic;
 using Libros;
 using Usuarios;
+using Prestamos;
 namespace ConsoleApp1;
 
 class Program
 {                                                                                                                                                                                                                                                                                                                                                                   
     static List<Libro> libros = new List<Libro>();
     static List<Usuario> usuarios = new List<Usuario>();
+    static List<Prestamo> prestamos = new List<Prestamo>();
     static int contadorId = 1;
     static void Main(string[] args)
     {
+
+usuarios.Add(new Usuario(1, "Ana", "Lopez", "111", "ana@gmail.com", "300111"));
+usuarios.Add(new Usuario(2, "Luis", "Gomez", "222", "luis@gmail.com", "300222"));
+
+libros.Add(new Libro { Id = 1, Titulo = "Libro A", Disponible = true });
+libros.Add(new Libro { Id = 2, Titulo = "Libro B", Disponible = true });
 ///////////////////////////// MENU PRINCIPAL////////////////////////////////////////////
 
         bool salir = false;
@@ -678,6 +686,9 @@ static void ActualizarUsuario()
 
 static void EliminarUsuario()
 {
+    Console.Clear();
+    Console.WriteLine("=== ELIMINAR USUARIO ===\n");
+
     Console.Write("Ingrese el ID del usuario: ");
     int id = int.Parse(Console.ReadLine());
 
@@ -690,13 +701,23 @@ static void EliminarUsuario()
         return;
     }
 
+    bool tienePrestamosActivos = prestamos.Any(p => p.IdUsuario == id && p.Estado == "Activo");
+
+    if (tienePrestamosActivos)
+    {
+        Console.WriteLine("No se puede eliminar el usuario, tiene préstamos activos ");
+        Console.ReadKey();
+        return;
+    }
+
+    // 🔹 CONFIRMACIÓN
     Console.Write($"¿Seguro que desea eliminar a {usuario.Nombre}? (S/N): ");
     string confirmacion = Console.ReadLine();
 
     if (confirmacion.ToLower() == "s")
     {
         usuarios.Remove(usuario);
-        Console.WriteLine("Usuario eliminado correctamente ");
+        Console.WriteLine("Usuario eliminado correctamente ✔");
     }
     else
     {
@@ -708,17 +729,6 @@ static void EliminarUsuario()
 
 
 // menu prestamos
-
-public class Prestamo
-{
-    public int IdPrestamo { get; set; }
-    public int IdUsuario { get; set; }
-    public int IdLibro { get; set; }
-    public DateTime FechaPrestamo { get; set; }
-    public DateTime FechaLimite { get; set; }
-    public DateTime? FechaDevolucion { get; set; } 
-    public string Estado { get; set; } = "Activo";
-}
 
 static void MenuPrestamos()
     {
@@ -765,57 +775,266 @@ static void MenuPrestamos()
 }
     }
     static void CrearPrestamo()
-    {
-        Console.Clear();
-        Console.WriteLine("Usuario existe y esta activo");
-        Console.WriteLine("");
-        Console.WriteLine("Libro existe y esta disponible");
-        Console.WriteLine("");
+{
+    Console.Clear();
+    Console.WriteLine("=== CREAR PRÉSTAMO ===\n");
 
-        Console.WriteLine("Presiona enter volver al menú préstamos");
+    // 🔹 VALIDAR USUARIO
+    Console.Write("Ingrese ID del usuario: ");
+    int idUsuario = int.Parse(Console.ReadLine());
+
+    Usuario usuario = usuarios.FirstOrDefault(u => u.Id == idUsuario);
+
+    if (usuario == null || !usuario.Activo)
+    {
+        Console.WriteLine("\nUsuario no existe o está inactivo ");
         Console.ReadKey();
+        return;
     }
+
+    Console.WriteLine("\nUsuario válido ");
+
+    Console.Write("Ingrese ID del libro: ");
+    int idLibro = int.Parse(Console.ReadLine());
+
+    Libro libro = libros.FirstOrDefault(l => l.Id == idLibro);
+
+    if (libro == null || !libro.Disponible)
+    {
+        Console.WriteLine("\nLibro no disponible ");
+        Console.ReadKey();
+        return;
+    }
+
+    Console.WriteLine("\nLibro disponible ");
+
+    Prestamo nuevo = new Prestamo();
+    nuevo.IdPrestamo = prestamos.Count + 1;
+    nuevo.IdUsuario = idUsuario;
+    nuevo.IdLibro = idLibro;
+    nuevo.FechaPrestamo = DateTime.Now;
+    nuevo.FechaLimite = DateTime.Now.AddDays(7);
+
+    prestamos.Add(nuevo);
+
+    libro.Disponible = false;
+
+    Console.WriteLine("\nPréstamo creado correctamente ");
+    Console.WriteLine(nuevo.ResumenCorto());
+
+    Console.WriteLine("\nPresiona una tecla para continuar...");
+    Console.ReadKey();
+}
+
     static void ListarPrestamos()
+{
+    bool volver = false;
+
+    while (!volver)
     {
         Console.Clear();
-        Console.WriteLine("Todos");
-        Console.WriteLine("Activos");
-        Console.WriteLine("Devueltos");
-        Console.WriteLine("");
+        Console.WriteLine("=== LISTAR PRÉSTAMOS ===");
 
-        Console.WriteLine("Volver al menú préstamos");
-        Console.ReadKey();
+        Console.WriteLine("1. Todos");
+        Console.WriteLine("2. Activos");
+        Console.WriteLine("3. Devueltos");
+        Console.WriteLine("4. Volver");
+
+        Console.Write("Seleccione una opción: ");
+        string opcion = Console.ReadLine();
+
+        switch (opcion)
+        {
+            case "1":
+                MostrarTodos();
+                break;
+
+            case "2":
+                MostrarActivos();
+                break;
+
+            case "3":
+                MostrarDevueltos();
+                break;
+
+            case "4":
+                volver = true;
+                break;
+
+            default:
+                Console.WriteLine("Opción no válida ");
+                Console.ReadKey();
+                break;
+        }
+    }
+}
+static void MostrarTodos()
+{
+    Console.Clear();
+    Console.WriteLine("=== TODOS LOS PRÉSTAMOS ===");
+
+    if (prestamos.Count == 0)
+    {
+        Console.WriteLine("No hay préstamos");
+    }
+    else
+    {
+        foreach (var p in prestamos)
+        {
+            Console.WriteLine(p.ResumenCorto());
+        }
+    }
+
+    Console.ReadKey();
+}
+static void MostrarActivos()
+{
+    Console.Clear();
+    Console.WriteLine("=== PRÉSTAMOS ACTIVOS ===");
+
+    var activos = prestamos.Where(p => p.Estado == "Activo").ToList();
+
+    if (activos.Count == 0)
+    {
+        Console.WriteLine("No hay préstamos activos");
+    }
+    else
+    {
+        foreach (var p in activos)
+        {
+            Console.WriteLine(p.ResumenCorto());
+        }
+    }
+
+    Console.ReadKey();
+}
+static void MostrarDevueltos()
+{
+    Console.Clear();
+    Console.WriteLine("=== PRÉSTAMOS DEVUELTOS ===");
+
+    var devueltos = prestamos.Where(p => p.Estado == "Devuelto").ToList();
+
+    if (devueltos.Count == 0)
+    {
+        Console.WriteLine("No hay préstamos devueltos");
+    }
+    else
+    {
+        foreach (var p in devueltos)
+        {
+            Console.WriteLine(p.ResumenCorto());
+        }
+    }
+
+    Console.ReadKey();
 }
 static void VerDetallePrestamo()
+{
+    Console.Clear();
+    Console.WriteLine("=== VER DETALLE DEL PRÉSTAMO ===");
+
+    Console.Write("Ingrese ID del préstamo: ");
+    int id = int.Parse(Console.ReadLine());
+
+    Prestamo prestamo = prestamos.FirstOrDefault(p => p.IdPrestamo == id);
+
+    if (prestamo == null)
     {
-        Console.Clear();
-        Console.WriteLine("Ver detalle del préstamo por ID");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú préstamos");
-        Console.ReadKey();
+        Console.WriteLine("\nNo se encontró el préstamo ");
+    }
+    else
+    {
+        Console.WriteLine("\nDetalle del préstamo:\n");
+        Console.WriteLine(prestamo.DetalleCompleto());
+    }
+
+    Console.WriteLine("Presiona una tecla para volver...");
+    Console.ReadKey();
 }
 static void RegistrarDevolucion()
+{
+    Console.Clear();
+    Console.WriteLine("=== REGISTRAR DEVOLUCIÓN ===");
+
+    Console.Write("Ingrese ID del préstamo: ");
+    int id = int.Parse(Console.ReadLine());
+
+    Prestamo prestamo = prestamos.FirstOrDefault(p => p.IdPrestamo == id);
+
+    if (prestamo == null)
     {
-        Console.Clear();
-        Console.WriteLine("Cambia el prestamo a devuelto");
-        Console.WriteLine("Marca el libro como disponible");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú préstamos");
+        Console.WriteLine("\nPréstamo no encontrado ");
         Console.ReadKey();
+        return;
+    }
+
+    if (prestamo.Estado == "Devuelto")
+    {
+        Console.WriteLine("\nEste préstamo ya fue devuelto ");
+        Console.ReadKey();
+        return;
+    }
+
+    prestamo.Estado = "Devuelto";
+    prestamo.FechaDevolucion = DateTime.Now;
+
+    Libro libro = libros.FirstOrDefault(l => l.Id == prestamo.IdLibro);
+
+    if (libro != null)
+    {
+        libro.Disponible = true;
+    }
+
+    Console.WriteLine("\nDevolución registrada correctamente ");
+    Console.ReadKey();
 }
 static void EliminarPrestamo()
-    {
-        Console.Clear();
-        Console.WriteLine("ADVERTENCIA: Esta acción no se puede deshacer");
-        Console.WriteLine("");
-        Console.WriteLine("Recomendacion : recomendado: solo si está cerrado o fue creado por error; si lo borras activo, debes devolver el libro automáticamente");
-        Console.WriteLine("");
-        Console.WriteLine("Eliminar préstamo");
-        Console.ReadKey();
-}
+{
+    Console.Clear();
+    Console.WriteLine("=== ELIMINAR PRÉSTAMO ===\n");
 
+    Console.WriteLine("⚠ ADVERTENCIA: Esta acción no se puede deshacer\n");
+
+    Console.Write("Ingrese ID del préstamo: ");
+    int id = int.Parse(Console.ReadLine());
+
+    Prestamo prestamo = prestamos.FirstOrDefault(p => p.IdPrestamo == id);
+
+    if (prestamo == null)
+    {
+        Console.WriteLine("\nPréstamo no encontrado ");
+        Console.ReadKey();
+        return;
+    }
+
+    if (prestamo.Estado == "Activo")
+    {
+        Libro libro = libros.FirstOrDefault(l => l.Id == prestamo.IdLibro);
+
+        if (libro != null)
+        {
+            libro.Disponible = true;
+        }
+
+        Console.WriteLine("\nEl préstamo estaba activo → libro liberado ");
+    }
+
+    Console.Write("\n¿Seguro que desea eliminar el préstamo? (S/N): ");
+    string confirmacion = Console.ReadLine();
+
+    if (confirmacion.ToLower() == "s")
+    {
+        prestamos.Remove(prestamo);
+        Console.WriteLine("\nPréstamo eliminado correctamente ");
+    }
+    else
+    {
+        Console.WriteLine("\nOperación cancelada");
+    }
+
+    Console.ReadKey();
+}
 // menu busquedas y reportes
 static void BusquedasReportes()
     {
