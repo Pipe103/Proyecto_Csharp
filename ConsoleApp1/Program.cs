@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Libros;
+using Usuarios;
 namespace ConsoleApp1;
 
 class Program
-{
+{                                                                                                                                                                                                                                                                                                                                                                   
     static List<Libro> libros = new List<Libro>();
+    static List<Usuario> usuarios = new List<Usuario>();
     static int contadorId = 1;
     static void Main(string[] args)
     {
@@ -433,16 +436,7 @@ static void EliminarLibro()
 /// 
 
 
-public class Usuario
-{
-    public int Id { get; set; }
-    public string Nombre { get; set; }
-    public string Apellido { get; set; }
-    public string Documento { get; set; }
-    public string Correo { get; set; }
-    public string Telefono { get; set; }
-    public bool Activo { get; set; }
-}
+ 
 static void MenuUsuario()
     {
         bool volver = false;
@@ -489,53 +483,227 @@ static void MenuUsuario()
             }
 
     }
-
+    }
     static void RegistrarUsuario()
     {
         Console.Clear();
-        Console.WriteLine("Registrar nuevo usuario");
-        Console.WriteLine("");
-        Console.WriteLine("");
-        Console.WriteLine("Presiona enter volver al menú usuario");
+        Console.WriteLine("=== Registrar nuevo usuario ===");
+        Console.WriteLine();
+
+        
+        Console.Write("Ingrese nombre: ");
+        string nombre = Console.ReadLine();
+
+        Console.Write("Ingrese apellido: ");
+        string apellido = Console.ReadLine();
+
+        Console.Write("Ingrese documento: ");
+        string documento = Console.ReadLine();
+
+        Console.Write("Ingrese correo: ");
+        string correo = Console.ReadLine();
+
+        Console.Write("Ingrese teléfono: ");
+        string telefono = Console.ReadLine();
+
+        
+        Usuario nuevoUsuario = new Usuario(contadorId++, nombre, apellido, documento, correo, telefono);
+
+        
+        usuarios.Add(nuevoUsuario);
+
+        Console.WriteLine();
+        Console.WriteLine("Usuario registrado correctamente:");
+        Console.WriteLine(nuevoUsuario.DetalleCompleto());
+
+        Console.WriteLine();
+        Console.WriteLine("Presiona cualquier tecla para volver al menú usuario...");
         Console.ReadKey();
     }
+    ///////////////////////////////
+    /// 
+    
+
+
     static void ListarUsuarios()
     {
         Console.Clear();
-        Console.WriteLine("Listado de usuarios");
-        Console.WriteLine("");
-        Console.WriteLine("Presiona enter volver al menú usuario");
-        Console.ReadKey();
+    Console.WriteLine("=== Listado de usuarios ===");
+    Console.WriteLine();
+
+    if (usuarios.Count == 0)
+    {
+        Console.WriteLine("No hay usuarios registrados.");
+    }
+    else
+    {
+        foreach (Usuario u in usuarios)
+        {
+            Console.WriteLine(u.DetalleCompleto());
+            Console.WriteLine("---------------------------");
+        }
+    }
+
+    Console.WriteLine();
+    Console.WriteLine("Presiona cualquier tecla para volver al menú usuario...");
+    Console.ReadKey();
+
 }
+
+///////////////////////////////////////////////////
+
+
 static void VerDetalleUsuario()
     {
         Console.Clear();
-        Console.WriteLine("Ver detalle del usuario por ID/documento");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú usuario");
-        Console.ReadKey();
-}
-static void ActualizarUsuario()
-    {
-        Console.Clear();
-        Console.WriteLine("Editar nombre");
-        Console.WriteLine("");
-        Console.WriteLine("Editar contacto");
-        Console.WriteLine("");
-        Console.WriteLine("Activar / desactivar");
-        Console.WriteLine("");
+    Console.WriteLine("=== Ver detalle del usuario por ID/documento ===");
+    Console.WriteLine();
 
-        Console.WriteLine("Presiona enter volver al menú usuario");
-        Console.ReadKey();
-}
-static void EliminarUsuario()
+    Console.Write("Ingrese ID o Documento: ");
+    string entrada = Console.ReadLine();
+
+    Usuario encontrado = null;
+
+    // Primero intentamos buscar por ID (si la entrada es numérica)
+    if (int.TryParse(entrada, out int idBuscado))
     {
-        Console.Clear();
-        bool tienePrestamosActivos = false;
-        Console.WriteLine("Eliminar usuario");
-        Console.ReadKey();
+        encontrado = usuarios.FirstOrDefault(u => u.Id == idBuscado);
     }
+    else
+    {
+        // Si no es número, buscamos por documento
+        encontrado = usuarios.FirstOrDefault(u => u.Documento == entrada);
+    }
+
+    Console.WriteLine();
+    if (encontrado != null)
+    {
+        Console.WriteLine("Usuario encontrado:");
+        Console.WriteLine(encontrado.DetalleCompleto());
+    }
+    else
+    {
+        Console.WriteLine("No se encontró ningún usuario con ese ID o documento.");
+    }
+
+    Console.WriteLine();
+    Console.WriteLine("Presiona cualquier tecla para volver al menú usuario...");
+    Console.ReadKey();
+}
+
+////////////////////////////////////////////////
+
+
+
+static void ActualizarUsuario()
+{
+    Console.Clear();
+    Console.WriteLine("=== ACTUALIZAR USUARIO ===");
+
+    Console.Write("Ingrese el ID del usuario: ");
+    int id = int.Parse(Console.ReadLine());
+
+    Usuario usuario = usuarios.FirstOrDefault(u => u.Id == id);
+
+    if (usuario == null)
+    {
+        Console.WriteLine("Usuario no encontrado ");
+        Console.ReadKey();
+        return;
+    }
+
+    Console.WriteLine("Usuario encontrado ");
+    Console.WriteLine($"Nombre actual: {usuario.Nombre}");
+    Console.WriteLine($"Apellido actual: {usuario.Apellido}");
+    Console.WriteLine($"Documento actual: {usuario.Documento}");
+    Console.WriteLine($"Correo actual: {usuario.Correo}");
+    Console.WriteLine($"Teléfono actual: {usuario.Telefono}");
+    Console.WriteLine($"Estado actual: {(usuario.Activo ? "Activo" : "Inactivo")}\n");
+
+    // EDITAR NOMBRE
+    Console.Write("Nuevo nombre (ENTER para omitir): ");
+    string nuevoNombre = Console.ReadLine();
+    if (!string.IsNullOrWhiteSpace(nuevoNombre))
+    {
+        usuario.Nombre = nuevoNombre;
+    }
+
+    // EDITAR APELLIDO
+    Console.Write("Nuevo apellido (ENTER para omitir): ");
+    string nuevoApellido = Console.ReadLine();
+    if (!string.IsNullOrWhiteSpace(nuevoApellido))
+    {
+        usuario.Apellido = nuevoApellido;
+    }
+
+    // EDITAR DOCUMENTO
+    Console.Write("Nuevo documento (ENTER para omitir): ");
+    string nuevoDocumento = Console.ReadLine();
+    if (!string.IsNullOrWhiteSpace(nuevoDocumento))
+    {
+        usuario.Documento = nuevoDocumento;
+    }
+
+    // EDITAR CORREO
+    Console.Write("Nuevo correo (ENTER para omitir): ");
+    string nuevoCorreo = Console.ReadLine();
+    if (!string.IsNullOrWhiteSpace(nuevoCorreo))
+    {
+        usuario.Correo = nuevoCorreo;
+    }
+
+    // EDITAR TELÉFONO
+    Console.Write("Nuevo teléfono (ENTER para omitir): ");
+    string nuevoTelefono = Console.ReadLine();
+    if (!string.IsNullOrWhiteSpace(nuevoTelefono))
+    {
+        usuario.Telefono = nuevoTelefono;
+    }
+
+    // CAMBIAR ESTADO
+    Console.Write("¿Desea cambiar el estado? (S/N): ");
+    string cambiarEstado = Console.ReadLine();
+
+    if (cambiarEstado.ToLower() == "s")
+    {
+        usuario.Activo = !usuario.Activo;
+    }
+
+    Console.WriteLine("\nUsuario actualizado correctamente ✔");
+    Console.ReadKey();
+}
+///////////////////////////////////
+
+
+
+static void EliminarUsuario()
+{
+    Console.Write("Ingrese el ID del usuario: ");
+    int id = int.Parse(Console.ReadLine());
+
+    Usuario usuario = usuarios.FirstOrDefault(u => u.Id == id);
+
+    if (usuario == null)
+    {
+        Console.WriteLine("Usuario no encontrado ");
+        Console.ReadKey();
+        return;
+    }
+
+    Console.Write($"¿Seguro que desea eliminar a {usuario.Nombre}? (S/N): ");
+    string confirmacion = Console.ReadLine();
+
+    if (confirmacion.ToLower() == "s")
+    {
+        usuarios.Remove(usuario);
+        Console.WriteLine("Usuario eliminado correctamente ");
+    }
+    else
+    {
+        Console.WriteLine("Operación cancelada");
+    }
+
+    Console.ReadKey();
 }
 
 
