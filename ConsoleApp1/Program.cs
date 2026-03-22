@@ -1109,41 +1109,137 @@ static void BusquedasReportes()
         Console.ReadKey();
     }
     static void BuscarRepotePorTitulo()
+{
+    Console.Clear();
+    Console.WriteLine("=== BUSCAR LIBRO POR TÍTULO ===\n");
+
+    Console.Write("Ingrese el título: ");
+    string titulo = Console.ReadLine().ToLower();
+
+    var resultados = libros
+        .Where(l => l.Titulo.ToLower().Contains(titulo))
+        .ToList();
+
+    Console.WriteLine();
+
+    if (resultados.Count == 0)
     {
-        Console.Clear();
-        Console.WriteLine("Buscar libro por titulo");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
-        Console.ReadKey();
+        Console.WriteLine("No se encontraron libros ");
     }
+    else
+    {
+        Console.WriteLine("Resultados:\n");
+
+        foreach (var libro in resultados)
+        {
+            Console.WriteLine($"ID: {libro.Id} | Título: {libro.Titulo} | Autor: {libro.Autor}");
+        }
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
+}
     static void BuscarRepotePorAutor()
+{
+    Console.Clear();
+    Console.WriteLine("=== BUSCAR LIBRO POR AUTOR ===\n");
+
+    Console.Write("Ingrese el nombre del autor: ");
+    string autor = Console.ReadLine().ToLower();
+
+    var resultados = libros
+        .Where(l => l.Autor.ToLower().Contains(autor))
+        .ToList();
+
+    Console.WriteLine();
+
+    if (resultados.Count == 0)
     {
-        Console.Clear();
-        Console.WriteLine("Buscar libro por autor");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
-        Console.ReadKey();
+        Console.WriteLine("No se encontraron libros ");
     }
+    else
+    {
+        Console.WriteLine("Resultados:\n");
+
+        foreach (var libro in resultados)
+        {
+            Console.WriteLine($"ID: {libro.Id} | Título: {libro.Titulo} | Autor: {libro.Autor}");
+        }
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
+}
     static void BuscarRepotePorID()
+{
+    Console.Clear();
+    Console.WriteLine("=== BUSCAR LIBRO POR ID / ISBN ===\n");
+
+    Console.Write("Ingrese ID o ISBN: ");
+    string entrada = Console.ReadLine();
+
+    Libro encontrado = null;
+
+    if (int.TryParse(entrada, out int id))
     {
-        Console.Clear();
-        Console.WriteLine("Buscar libro por ID/ISBN");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
-        Console.ReadKey();
+        encontrado = libros.FirstOrDefault(l => l.Id == id);
     }
+    else
+    {
+        encontrado = libros.FirstOrDefault(l => l.ISBN == entrada);
+    }
+
+    Console.WriteLine();
+
+    if (encontrado == null)
+    {
+        Console.WriteLine("No se encontró el libro ");
+    }
+    else
+    {
+        Console.WriteLine("Libro encontrado:\n");
+        Console.WriteLine($"ID: {encontrado.Id}");
+        Console.WriteLine($"ISBN: {encontrado.ISBN}");
+        Console.WriteLine($"Título: {encontrado.Titulo}");
+        Console.WriteLine($"Autor: {encontrado.Autor}");
+        Console.WriteLine($"Categoría: {encontrado.Categoria}");
+        Console.WriteLine($"Año: {encontrado.Anio}");
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
+}
     static void BuscarRepotePorCategoria()
+{
+    Console.Clear();
+    Console.WriteLine("=== BUSCAR LIBRO POR CATEGORÍA ===\n");
+
+    Console.Write("Ingrese la categoría: ");
+    string categoria = Console.ReadLine().ToLower();
+
+    var resultados = libros
+        .Where(l => l.Categoria.ToLower().Contains(categoria))
+        .ToList();
+
+    Console.WriteLine();
+
+    if (resultados.Count == 0)
     {
-        Console.Clear();
-        Console.WriteLine("Buscar libro por categoria");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
-        Console.ReadKey();
+        Console.WriteLine("No se encontraron libros ");
     }
+    else
+    {
+        Console.WriteLine("Resultados:\n");
+
+        foreach (var libro in resultados)
+        {
+            Console.WriteLine($"ID: {libro.Id} | Título: {libro.Titulo} | Categoría: {libro.Categoria}");
+        }
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
+}
     static void BuscarUsuario()
     {
         bool volver = false;
@@ -1179,23 +1275,70 @@ static void BusquedasReportes()
 }
     }
     static void BuscarUsuarioPorNombre()
+{
+    Console.Clear();
+    Console.WriteLine("=== BUSCAR USUARIO POR NOMBRE ===\n");
+
+    Console.Write("Ingrese el nombre: ");
+    string nombre = Console.ReadLine().ToLower();
+
+    var resultados = usuarios
+        .Where(u => u.Nombre.ToLower().Contains(nombre))
+        .ToList();
+
+    Console.WriteLine();
+
+    if (resultados.Count == 0)
     {
-        Console.Clear();
-        Console.WriteLine("Buscar usuario por nombre");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
-        Console.ReadKey();
+        Console.WriteLine("No se encontraron usuarios ");
     }
+    else
+    {
+        Console.WriteLine("Resultados:\n");
+
+        foreach (var u in resultados)
+        {
+            Console.WriteLine($"ID: {u.Id} | Nombre: {u.Nombre} {u.Apellido} | Documento: {u.Documento}");
+        }
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
+}
     static void BuscarUsuarioPorID()
+{
+    Console.Clear();
+    Console.WriteLine("=== BUSCAR USUARIO POR ID / DOCUMENTO ===\n");
+
+    Console.Write("Ingrese ID o documento: ");
+    string entrada = Console.ReadLine();
+
+    Usuario encontrado = null;
+
+    if (int.TryParse(entrada, out int id))
     {
-        Console.Clear();
-        Console.WriteLine("Buscar usuario por ID/documento");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú busquedas y reportes");
-        Console.ReadKey();
+        encontrado = usuarios.FirstOrDefault(u => u.Id == id);
     }
+    else
+    {
+        encontrado = usuarios.FirstOrDefault(u => u.Documento == entrada);
+    }
+
+    Console.WriteLine();
+
+    if (encontrado == null)
+    {
+        Console.WriteLine("Usuario no encontrado ");
+    }
+    else
+    {
+        Console.WriteLine("Usuario encontrado:\n");
+        Console.WriteLine(encontrado.DetalleCompleto());
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
+}
 static void Reportes()
     {
         bool volver = false;
@@ -1240,40 +1383,147 @@ static void Reportes()
         }
     }
 static void PrestamosPorUsuario()
+{
+    Console.Clear();
+    Console.WriteLine("=== PRÉSTAMOS POR USUARIO ===\n");
+
+    Console.Write("Ingrese ID del usuario: ");
+    int id = int.Parse(Console.ReadLine());
+
+    // 🔹 Validar usuario
+    Usuario usuario = usuarios.FirstOrDefault(u => u.Id == id);
+
+    if (usuario == null)
     {
-        Console.Clear();
-        Console.WriteLine("Listar préstamos por usuario");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú reportes");
+        Console.WriteLine("\nUsuario no encontrado ");
         Console.ReadKey();
+        return;
+    }
+
+    // 🔹 Buscar préstamos
+    var lista = prestamos
+        .Where(p => p.IdUsuario == id)
+        .ToList();
+
+    Console.WriteLine($"\nPréstamos de {usuario.Nombre}:\n");
+
+    if (lista.Count == 0)
+    {
+        Console.WriteLine("No tiene préstamos");
+    }
+    else
+    {
+        foreach (var p in lista)
+        {
+            Console.WriteLine(p.ResumenCorto());
+        }
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
 }
 static void PrestamosPorLibro()
+{
+    Console.Clear();
+    Console.WriteLine("=== PRÉSTAMOS POR LIBRO ===\n");
+
+    Console.Write("Ingrese ID del libro: ");
+    int id = int.Parse(Console.ReadLine());
+
+    // 🔹 Validar libro
+    Libro libro = libros.FirstOrDefault(l => l.Id == id);
+
+    if (libro == null)
     {
-        Console.Clear();
-        Console.WriteLine("Listar préstamos por libro");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú reportes");
+        Console.WriteLine("\nLibro no encontrado ");
         Console.ReadKey();
+        return;
+    }
+
+    // 🔹 Buscar préstamos
+    var lista = prestamos
+        .Where(p => p.IdLibro == id)
+        .ToList();
+
+    Console.WriteLine($"\nPréstamos del libro: {libro.Titulo}\n");
+
+    if (lista.Count == 0)
+    {
+        Console.WriteLine("Este libro no tiene préstamos");
+    }
+    else
+    {
+        foreach (var p in lista)
+        {
+            Console.WriteLine(p.ResumenCorto());
+        }
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
 }
 static void PrestamosVencidos()
+{
+    Console.Clear();
+    Console.WriteLine("=== PRÉSTAMOS VENCIDOS ===\n");
+
+    var vencidos = prestamos
+        .Where(p => p.Estado == "Activo" && DateTime.Now > p.FechaLimite)
+        .ToList();
+
+    if (vencidos.Count == 0)
     {
-        Console.Clear();
-        Console.WriteLine("Listar préstamos vencidos");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú reportes");
-        Console.ReadKey();
+        Console.WriteLine("No hay préstamos vencidos ✔");
+    }
+    else
+    {
+        Console.WriteLine("Préstamos vencidos:\n");
+
+        foreach (var p in vencidos)
+        {
+            Console.WriteLine($"ID: {p.IdPrestamo} | Usuario: {p.IdUsuario} | Libro: {p.IdLibro} | Fecha límite: {p.FechaLimite.ToShortDateString()}");
+        }
+    }
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
 }
 static void ResumenGeneral()
-    {
-        Console.Clear();
-        Console.WriteLine("Resumen general");
-        Console.WriteLine("");
-        
-        Console.WriteLine("Presiona enter volver al menú reportes");
-        Console.ReadKey();
+{
+    Console.Clear();
+    Console.WriteLine("=== RESUMEN GENERAL ===\n");
+
+    int totalLibros = libros.Count;
+    int disponibles = libros.Count(l => l.Disponible);
+    int prestados = totalLibros - disponibles;
+
+    int totalUsuarios = usuarios.Count;
+    int activos = usuarios.Count(u => u.Activo);
+    int inactivos = totalUsuarios - activos;
+
+    int totalPrestamos = prestamos.Count;
+    int activosPrestamos = prestamos.Count(p => p.Estado == "Activo");
+    int devueltos = prestamos.Count(p => p.Estado == "Devuelto");
+    int vencidos = prestamos.Count(p => p.Estado == "Activo" && DateTime.Now > p.FechaLimite);
+
+    Console.WriteLine("📚 LIBROS");
+    Console.WriteLine($"Total: {totalLibros}");
+    Console.WriteLine($"Disponibles: {disponibles}");
+    Console.WriteLine($"Prestados: {prestados}\n");
+
+    Console.WriteLine("👤 USUARIOS");
+    Console.WriteLine($"Total: {totalUsuarios}");
+    Console.WriteLine($"Activos: {activos}");
+    Console.WriteLine($"Inactivos: {inactivos}\n");
+
+    Console.WriteLine("📄 PRÉSTAMOS");
+    Console.WriteLine($"Total: {totalPrestamos}");
+    Console.WriteLine($"Activos: {activosPrestamos}");
+    Console.WriteLine($"Devueltos: {devueltos}");
+    Console.WriteLine($"Vencidos: {vencidos}");
+
+    Console.WriteLine("\nPresiona una tecla para volver...");
+    Console.ReadKey();
 }
     
 
