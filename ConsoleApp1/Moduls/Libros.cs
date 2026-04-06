@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 namespace Moduls;
 
 public class Libro
@@ -11,6 +12,11 @@ public class Libro
     public bool Disponible { get; set; }
 
     public Libro()
+=======
+namespace ConsoleApp1.Models
+{
+    public class Libro
+>>>>>>> feature/models-testing-objetos
     {
         Disponible = true;
     }
@@ -40,4 +46,8 @@ public class Libro
     {
         return ResumenCorto();
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> feature/models-testing-objetos
