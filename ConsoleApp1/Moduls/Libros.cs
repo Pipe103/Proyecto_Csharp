@@ -1,5 +1,6 @@
-namespace Libros{
-public class Libro
+namespace ConsoleApp1.Models
+{
+    public class Libro
     {
         public int Id { get; set; }
         public string ISBN { get; set; }
@@ -9,5 +10,4 @@ public class Libro
         public int Anio { get; set; }
         public bool Disponible { get; set; }
     }
-    
 }
