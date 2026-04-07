@@ -2,13 +2,15 @@
 using System.Linq;
 using System.Collections.Generic;
 using ConsoleApp1.Models;
+using ConsoleApp1.Services;
 using System.Text.Json;
 using System.IO;
 namespace ConsoleApp1;
 
 class Program
-{                                                                                                                                                                                                                                                                                                                                                                   
-    static List<Libro> libros = new List<Libro>();
+{                 
+    static List<Libro> libros = new List<Libro>();                                                                                                                                                                                                                                                                                                                                                  
+    static LibroService libroService = new LibroService();
     static List<Usuario> usuarios = new List<Usuario>();
     static List<Prestamo> prestamos = new List<Prestamo>();
     static int contadorId = 1;
@@ -18,8 +20,7 @@ class Program
 usuarios.Add(new Usuario(1, "Ana", "Lopez", "111", "ana@gmail.com", "300111"));
 usuarios.Add(new Usuario(2, "Luis", "Gomez", "222", "luis@gmail.com", "300222"));
 
-libros.Add(new Libro { Id = 1, Titulo = "Libro A", Disponible = true });
-libros.Add(new Libro { Id = 2, Titulo = "Libro B", Disponible = true });
+libroService.AgregarLibro(new Libro { Id = 1, Titulo = "Libro A", Disponible = true });
 ///////////////////////////// MENU PRINCIPAL////////////////////////////////////////////
 
         bool salir = false;
@@ -119,47 +120,51 @@ libros.Add(new Libro { Id = 2, Titulo = "Libro B", Disponible = true });
 
 }
 static void RegistrarLibro()
+{
+    Console.Clear();
+    Console.WriteLine("Registrar nuevo libro");
+    Console.WriteLine("");
+
+    Libro nuevo = new Libro();
+    nuevo.Id = contadorId++;
+
+    Console.WriteLine("Titulo : ");
+    nuevo.Titulo = Console.ReadLine();
+    Console.WriteLine("");
+
+    Console.WriteLine("ISBN : ");
+    nuevo.ISBN = Console.ReadLine();
+    Console.WriteLine("");
+
+    Console.WriteLine("Autor : ");
+    nuevo.Autor = Console.ReadLine();
+    Console.WriteLine("");
+
+    Console.WriteLine("Categoria : ");
+    nuevo.Categoria = Console.ReadLine();
+    Console.WriteLine("");
+
+    Console.WriteLine("Año");
+    nuevo.Anio = int.Parse(Console.ReadLine());
+
+    Console.Write("¿Está disponible? (s/n): ");
+    string estado = Console.ReadLine().ToLower();
+
+    if (estado == "s")
     {
-        Console.Clear();
-        Console.WriteLine("Registrar nuevo libro");
-        Console.WriteLine("");
-        Libro nuevo = new Libro();
-        nuevo.Id = contadorId++;
-
-        Console.WriteLine("Titulo : ");
-        nuevo.Titulo = Console.ReadLine();
-        Console.WriteLine("");
-
-        Console.WriteLine("ISBN : ");
-        nuevo.ISBN = Console.ReadLine();
-        Console.WriteLine("");
-
-        Console.WriteLine("Autor : ");
-        nuevo.Autor = Console.ReadLine();
-        Console.WriteLine("");
-
-        Console.WriteLine("Categoria : ");
-        nuevo.Categoria = Console.ReadLine();
-        Console.WriteLine("");
-
-        Console.WriteLine("Año");
-        nuevo.Anio = int.Parse(Console.ReadLine());
-
-        Console.Write("¿Está disponible? (s/n): ");
-        string estado = Console.ReadLine().ToLower();
-
-        if (estado == "s"){
         nuevo.Disponible = true;
-        }else{
-        nuevo.Disponible = false;
-        }
-
-        libros.Add(nuevo);
-
-        Console.WriteLine("");
-        Console.WriteLine("Presiona enter volver al menú libro");
-        Console.ReadKey();
     }
+    else
+    {
+        nuevo.Disponible = false;
+    }
+
+    libroService.AgregarLibro(nuevo);
+
+    Console.WriteLine("");
+    Console.WriteLine("Presiona enter volver al menú libro");
+    Console.ReadKey();
+}
     // menu listar
 static void ListarLibros()
     {
@@ -203,23 +208,25 @@ static void ListarLibros()
 static void ListarTodos()
 {
     Console.Clear();
-    Console.WriteLine("Todos los libros");
+    Console.WriteLine("Todos los libros\n");
 
-    if (libros.Count == 0)
+    // Obtenemos todos los libros desde el servicio
+    var lista = libroService.ObtenerTodos();
+
+    if (lista.Count == 0)
     {
         Console.WriteLine("No hay libros registrados.");
     }
     else
     {
-        foreach (var libro in libros)
+        foreach (var libro in lista)
         {
-            Console.WriteLine($"ID: {libro.Id} | ISBN: {libro.ISBN} | Título: {libro.Titulo} | Autor: {libro.Autor} | Categoría: {libro.Categoria} | Año: {libro.Anio}");
+            Console.WriteLine($"ID: {libro.Id} | ISBN: {libro.ISBN} | Título: {libro.Titulo} | Autor: {libro.Autor} | Categoría: {libro.Categoria} | Año: {libro.Anio} | Disponible: {(libro.Disponible ? "Sí" : "No")}");
         }
     }
 
     Console.WriteLine("\nPresiona una tecla para volver...");
     Console.ReadKey();
-
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,26 +235,28 @@ static void ListarTodos()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 static void ListarDisponibles()
 {
-     Console.Clear();
+    Console.Clear();
     Console.WriteLine("Libros disponibles:\n");
 
-    var disponibles = libros.Where(l => l.Disponible).ToList();
+    // Obtenemos todos los libros y filtramos los que están disponibles
+    var lista = libroService.ObtenerTodos()
+        .Where(l => l.Disponible)
+        .ToList();
 
-    if (disponibles.Count == 0)
+    if (lista.Count == 0)
     {
         Console.WriteLine("No hay libros disponibles.");
     }
     else
     {
-        foreach (var libro in disponibles)
+        foreach (var libro in lista)
         {
-            Console.WriteLine($"ID: {libro.Id} | ISBN: {libro.ISBN} | Título: {libro.Titulo} | Autor: {libro.Autor} | Categoría: {libro.Categoria} | Año: {libro.Anio}");
+            Console.WriteLine($"ID: {libro.Id} | ISBN: {libro.ISBN} | Título: {libro.Titulo} | Autor: {libro.Autor} | Categoría: {libro.Categoria} | Año: {libro.Anio} | Disponible: {(libro.Disponible ? "Sí" : "No")}");
         }
     }
 
-    Console.WriteLine("Presiona una tecla para volver...");
+    Console.WriteLine("\nPresiona una tecla para volver...");
     Console.ReadKey();
-
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,10 +266,11 @@ static void ListarDisponibles()
 static void ListarPrestados()
 {
     Console.Clear();
-    Console.WriteLine("Libros prestados:");
-    Console.WriteLine("");
+    Console.WriteLine("Libros prestados:\n");
 
-    var prestados = libros.Where(l => !l.Disponible).ToList();
+    var prestados = libroService.ObtenerTodos()
+        .Where(l => !l.Disponible)
+        .ToList();
 
     if (prestados.Count == 0)
     {
@@ -273,11 +283,10 @@ static void ListarPrestados()
             Console.WriteLine($"ID: {libro.Id} | ISBN: {libro.ISBN} | Título: {libro.Titulo} | Autor: {libro.Autor} | Categoría: {libro.Categoria} | Año: {libro.Anio}");
         }
     }
-    
+
     Console.WriteLine("");
     Console.WriteLine("Presiona una tecla para volver...");
     Console.ReadKey();
-
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,8 +297,8 @@ static void ListarPrestados()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 static void VerDetalleLibro()
-    { 
-        Console.Clear();
+{
+    Console.Clear();
     Console.WriteLine("Ver detalle del libro");
     Console.WriteLine("");
 
@@ -300,11 +309,11 @@ static void VerDetalleLibro()
 
     if (int.TryParse(entrada, out idBuscado))
     {
-        encontrado = libros.FirstOrDefault(l => l.Id == idBuscado);
+        encontrado = libroService.BuscarPorId(idBuscado);
     }
     else
     {
-        encontrado = libros.FirstOrDefault(l => l.ISBN == entrada);
+        encontrado = libroService.BuscarPorISBN(entrada);
     }
 
     Console.Clear();
@@ -322,11 +331,10 @@ static void VerDetalleLibro()
         Console.WriteLine($"Categoría: {encontrado.Categoria}");
         Console.WriteLine($"Año: {encontrado.Anio}");
     }
-    
+
     Console.WriteLine("");
     Console.WriteLine("Presiona una tecla para volver al menú libro...");
     Console.ReadKey();
-
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,8 +344,7 @@ static void VerDetalleLibro()
 static void ActualizarLibro()
 {
     Console.Clear();
-    Console.WriteLine("Actualizar libro");
-    Console.WriteLine("");
+    Console.WriteLine("Actualizar libro\n");
 
     Console.Write("Ingrese el ID o ISBN del libro a actualizar: ");
     string entrada = Console.ReadLine();
@@ -347,11 +354,11 @@ static void ActualizarLibro()
 
     if (int.TryParse(entrada, out idBuscado))
     {
-        encontrado = libros.FirstOrDefault(l => l.Id == idBuscado);
+        encontrado = libroService.BuscarPorId(idBuscado);
     }
     else
     {
-        encontrado = libros.FirstOrDefault(l => l.ISBN == entrada);
+        encontrado = libroService.BuscarPorISBN(entrada);
     }
 
     if (encontrado == null)
@@ -360,10 +367,10 @@ static void ActualizarLibro()
     }
     else
     {
-        Console.WriteLine("Libro encontrado:");
-        Console.WriteLine($"ID: {encontrado.Id} | ISBN: {encontrado.ISBN} | Título: {encontrado.Titulo} | Autor: {encontrado.Autor} | Categoría: {encontrado.Categoria} | Año: {encontrado.Anio}");
+        Console.WriteLine("\nLibro encontrado:");
+        Console.WriteLine($"ID: {encontrado.Id} | ISBN: {encontrado.ISBN} | Título: {encontrado.Titulo}");
 
-        Console.WriteLine("Ingrese los nuevos valores (deje vacío si no desea cambiar):");
+        Console.WriteLine("\nIngrese los nuevos valores (deje vacío si no desea cambiar):");
 
         Console.Write("Nuevo título: ");
         string nuevoTitulo = Console.ReadLine();
@@ -385,18 +392,17 @@ static void ActualizarLibro()
         if (!string.IsNullOrWhiteSpace(nuevaCategoria))
             encontrado.Categoria = nuevaCategoria;
 
-        Console.WriteLine("Libro actualizado correctamente.");
+        Console.WriteLine("\nLibro actualizado correctamente.");
     }
 
-    Console.WriteLine("");
-    Console.WriteLine("Presiona una tecla para volver al menú...");
+    Console.WriteLine("\nPresiona una tecla para volver...");
     Console.ReadKey();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 static void EliminarLibro()
-    {
-        Console.Clear();
+{
+    Console.Clear();
     Console.WriteLine("Eliminar libro");
     Console.WriteLine("");
 
@@ -405,16 +411,18 @@ static void EliminarLibro()
 
     int idBuscado;
     Libro encontrado = null;
+
     if (int.TryParse(entrada, out idBuscado))
     {
-        encontrado = libros.FirstOrDefault(l => l.Id == idBuscado);
+        encontrado = libroService.BuscarPorId(idBuscado);
     }
     else
     {
-        encontrado = libros.FirstOrDefault(l => l.ISBN == entrada);
+        encontrado = libroService.BuscarPorISBN(entrada);
     }
 
     Console.Clear();
+
     if (encontrado == null)
     {
         Console.WriteLine("No se encontró ningún libro con ese ID/ISBN.");
@@ -427,7 +435,8 @@ static void EliminarLibro()
         }
         else
         {
-            libros.Remove(encontrado);
+            libroService.EliminarLibro(encontrado.Id);
+
             Console.WriteLine($"Libro '{encontrado.Titulo}' eliminado correctamente.");
         }
     }
@@ -435,8 +444,7 @@ static void EliminarLibro()
     Console.WriteLine("");
     Console.WriteLine("Presiona una tecla para volver al menú...");
     Console.ReadKey();
-
-    }
+}
 
 
 /// 
@@ -710,7 +718,6 @@ static void EliminarUsuario()
         return;
     }
 
-    // 🔹 CONFIRMACIÓN
     Console.Write($"¿Seguro que desea eliminar a {usuario.Nombre}? (S/N): ");
     string confirmacion = Console.ReadLine();
 
