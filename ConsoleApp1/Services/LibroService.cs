@@ -7,7 +7,13 @@ namespace ConsoleApp1.Services
 {
     public class LibroService
     {
-        private List<Libro> libros = new List<Libro>();
+        private List<Libro> libros;
+
+        public LibroService(List<Libro> libros)
+        {
+            this.libros = libros ?? new List<Libro>();
+        }
+
         public void AgregarLibro(Libro libro)
         {
             libros.Add(libro);
@@ -18,16 +24,18 @@ namespace ConsoleApp1.Services
             return libros;
         }
 
-        public void EliminarLibro(int id)
+        public bool EliminarLibro(int id)
         {
             var libro = libros.FirstOrDefault(l => l.Id == id);
-            if (libro != null)
-            {
-                libros.Remove(libro);
-            }
+
+            if (libro == null)
+                return false;
+
+            libros.Remove(libro);
+            return true;
         }
 
-        public Libro BuscarPorId(int id)
+        public Libro? BuscarPorId(int id)
         {
             return libros.FirstOrDefault(l => l.Id == id);
         }
@@ -46,11 +54,10 @@ namespace ConsoleApp1.Services
                 .ToList();
         }
 
-        public Libro BuscarPorISBN(string isbn)
+        public Libro? BuscarPorISBN(string isbn)
         {
             return libros.FirstOrDefault(l => l.ISBN == isbn);
         }
-
 
         public List<Libro> OrdenarPorTitulo()
         {

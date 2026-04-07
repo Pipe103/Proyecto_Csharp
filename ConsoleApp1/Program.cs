@@ -1,10 +1,10 @@
-﻿using System;
+﻿using System.Text.Json;
+using System.IO;using System;
 using System.Linq;
 using System.Collections.Generic;
 using ConsoleApp1.Models;
 using ConsoleApp1.Services;
-using System.Text.Json;
-using System.IO;
+
 namespace ConsoleApp1;
 
 class Program
@@ -15,9 +15,11 @@ static List<Usuario> usuarios = new List<Usuario>();
 static List<Prestamo> prestamos = new List<Prestamo>();
 static int contadorUsuarioId = 1;
 
+static PrestamoService prestamoService = new PrestamoService(prestamos, usuarios, libros);
 static UsuarioService usuarioService = new UsuarioService(usuarios, prestamos);
 
-static LibroService libroService = new LibroService();    static int contadorId = 1;
+static LibroService libroService = new LibroService(libros);
+static int contadorId = 1;
     static void Main(string[] args)
     {
 
@@ -753,52 +755,47 @@ static void MenuPrestamos()
             }
 }
     }
-    static void CrearPrestamo()
+static void CrearPrestamo()
 {
     Console.Clear();
     Console.WriteLine("=== CREAR PRÉSTAMO ===\n");
 
     Console.Write("Ingrese ID del usuario: ");
-    int idUsuario = int.Parse(Console.ReadLine());
+    if (!int.TryParse(Console.ReadLine(), out int idUsuario))
+    {
+        Console.WriteLine("ID inválido");
+        Console.ReadKey();
+        return;
+    }
 
     Usuario usuario = usuarios.FirstOrDefault(u => u.Id == idUsuario);
 
     if (usuario == null || !usuario.Activo)
     {
-        Console.WriteLine("\nUsuario no existe o está inactivo ");
+        Console.WriteLine("\nUsuario no existe o está inactivo");
         Console.ReadKey();
         return;
     }
 
-    Console.WriteLine("\nUsuario válido ");
+    Console.WriteLine("\nUsuario válido");
 
-    Console.Write("Ingrese ID del libro: ");
-    int idLibro = int.Parse(Console.ReadLine());
+    Console.Write("Ingrese ISBN del libro: ");
+    string isbn = Console.ReadLine();
 
-    Libro libro = libros.FirstOrDefault(l => l.Id == idLibro);
+    Libro libro = libros.FirstOrDefault(l => l.ISBN == isbn);
 
     if (libro == null || !libro.Disponible)
     {
-        Console.WriteLine("\nLibro no disponible ");
+        Console.WriteLine("\nLibro no disponible");
         Console.ReadKey();
         return;
     }
 
-    Console.WriteLine("\nLibro disponible ");
+    Console.WriteLine("\nLibro disponible");
 
-    Prestamo nuevo = new Prestamo();
-    nuevo.IdPrestamo = prestamos.Count + 1;
-    nuevo.IdUsuario = idUsuario;
-    nuevo.IdLibro = idLibro;
-    nuevo.FechaPrestamo = DateTime.Now;
-    nuevo.FechaLimite = DateTime.Now.AddDays(7);
+    string resultado = prestamoService.CrearPrestamo(idUsuario, libro.Id);
 
-    prestamos.Add(nuevo);
-
-    libro.Disponible = false;
-
-    Console.WriteLine("\nPréstamo creado correctamente ");
-    Console.WriteLine(nuevo.ResumenCorto());
+    Console.WriteLine("\n" + resultado);
 
     Console.WriteLine("\nPresiona una tecla para continuar...");
     Console.ReadKey();
@@ -977,34 +974,22 @@ static void EliminarPrestamo()
     Console.Write("Ingrese ID del préstamo: ");
     int id = int.Parse(Console.ReadLine());
 
-    Prestamo prestamo = prestamos.FirstOrDefault(p => p.IdPrestamo == id);
+    var prestamo = prestamoService.BuscarPorId(id);
 
     if (prestamo == null)
     {
-        Console.WriteLine("\nPréstamo no encontrado ");
+        Console.WriteLine("\nPréstamo no encontrado");
         Console.ReadKey();
         return;
-    }
-
-    if (prestamo.Estado == "Activo")
-    {
-        Libro libro = libros.FirstOrDefault(l => l.Id == prestamo.IdLibro);
-
-        if (libro != null)
-        {
-            libro.Disponible = true;
-        }
-
-        Console.WriteLine("\nEl préstamo estaba activo → libro liberado ");
     }
 
     Console.Write("\n¿Seguro que desea eliminar el préstamo? (S/N): ");
     string confirmacion = Console.ReadLine();
 
-    if (confirmacion.ToLower() == "s")
+    if (confirmacion?.ToLower() == "s")
     {
-        prestamos.Remove(prestamo);
-        Console.WriteLine("\nPréstamo eliminado correctamente ");
+        string resultado = prestamoService.EliminarPrestamo(id);
+        Console.WriteLine("\n" + resultado);
     }
     else
     {

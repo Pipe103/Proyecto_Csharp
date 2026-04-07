@@ -21,7 +21,6 @@ namespace ConsoleApp1.Services
             if (nuevoUsuario == null)
                 return false;
 
-            // Validar duplicado por documento
             if (usuarios.Any(u => u.Documento == nuevoUsuario.Documento))
             {
                 Console.WriteLine("⚠️ Ya existe un usuario con ese documento.");
@@ -43,13 +42,9 @@ namespace ConsoleApp1.Services
                 return null;
 
             if (int.TryParse(entrada, out int idBuscado))
-            {
                 return usuarios.FirstOrDefault(u => u.Id == idBuscado);
-            }
-            else
-            {
-                return usuarios.FirstOrDefault(u => u.Documento == entrada);
-            }
+
+            return usuarios.FirstOrDefault(u => u.Documento == entrada);
         }
 
         public bool ActualizarUsuario(int id, Usuario datosActualizados)
@@ -68,12 +63,10 @@ namespace ConsoleApp1.Services
             return true;
         }
 
-
         public bool PuedeEliminar(int id)
         {
             return !prestamos.Any(p => p.IdUsuario == id && p.Estado == "Activo");
         }
-
 
         public bool EliminarUsuario(int id)
         {
