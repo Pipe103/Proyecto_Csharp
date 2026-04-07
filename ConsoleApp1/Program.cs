@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using Libros;
-using Usuarios;
-using Prestamos;
+using ConsoleApp1.Models;
 using System.Text.Json;
 using System.IO;
 namespace ConsoleApp1;
